@@ -4,8 +4,8 @@ import org.apache.flink.api.common.restartstrategy.RestartStrategies;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer011;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer011;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 import org.apache.flink.streaming.util.serialization.SimpleStringSchema;
 
 public class FlinkReadWriteKafka {
@@ -24,7 +24,7 @@ public class FlinkReadWriteKafka {
         env.getConfig().setGlobalJobParameters(params);
 
         DataStream<String> messageStream = env
-                .addSource(new FlinkKafkaConsumer011<>(
+                .addSource(new FlinkKafkaConsumer<>(
                         params.getRequired("read-topic"),
                         new SimpleStringSchema(),
                         params.getProperties()));
@@ -35,7 +35,7 @@ public class FlinkReadWriteKafka {
         // back to Kafka, do it here!
 
         // Write payload back to Kafka topic
-        messageStream.addSink(new FlinkKafkaProducer011<>(
+        messageStream.addSink(new FlinkKafkaProducer<>(
                     params.getRequired("write-topic"),
                     new SimpleStringSchema(),
                     params.getProperties())).name("Write To Kafka");
