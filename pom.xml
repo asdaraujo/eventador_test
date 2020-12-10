@@ -30,7 +30,7 @@ under the License.
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<flink.version>1.6-SNAPSHOT</flink.version>
+		<flink.version>1.10.1</flink.version>
 	</properties>
 
 	<repositories>
@@ -58,11 +58,11 @@ under the License.
 			<artifactId>flink-json</artifactId>
 			<version>${flink.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-table_2.11</artifactId>
-			<version>${flink.version}</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.apache.flink</groupId>-->
+<!--			<artifactId>flink-table_2.11</artifactId>-->
+<!--			<version>${flink.version}</version>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-streaming-java_2.11</artifactId>
@@ -100,25 +100,25 @@ under the License.
 					<version>${flink.version}</version>
 					<scope>provided</scope>
 				</dependency>
+<!--				<dependency>-->
+<!--					<groupId>org.apache.flink</groupId>-->
+<!--					<artifactId>flink-table_2.10</artifactId>-->
+<!--					<version>${flink.version}</version>-->
+<!--				</dependency>-->
 				<dependency>
 					<groupId>org.apache.flink</groupId>
-					<artifactId>flink-table_2.10</artifactId>
-					<version>${flink.version}</version>
-				</dependency>
-				<dependency>
-					<groupId>org.apache.flink</groupId>
-					<artifactId>flink-streaming-java_2.10</artifactId>
+					<artifactId>flink-streaming-java_2.11</artifactId>
 					<version>${flink.version}</version>
 					<scope>provided</scope>
 				</dependency>
 				<dependency>
 					<groupId>org.apache.flink</groupId>
-					<artifactId>flink-streaming-scala_2.10</artifactId>
+					<artifactId>flink-streaming-scala_2.11</artifactId>
 					<version>${flink.version}</version>
 				</dependency>
 				<dependency>
 					<groupId>org.apache.flink</groupId>
-					<artifactId>flink-clients_2.10</artifactId>
+					<artifactId>flink-clients_2.11</artifactId>
 					<version>${flink.version}</version>
 					<scope>provided</scope>
 				</dependency>
