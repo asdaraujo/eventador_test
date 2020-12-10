@@ -73,7 +73,7 @@ public class FlinkReadWriteKafka {
                                     @Override
                                     public ProducerRecord<byte[], byte[]> serialize(KafkaMessage msg, @Nullable Long aLong) {
                                         return new ProducerRecord<>(
-                                                msg.topic,
+                                                writeTopic,
                                                 msg.partition,
                                                 msg.timestamp,
                                                 msg.key,
