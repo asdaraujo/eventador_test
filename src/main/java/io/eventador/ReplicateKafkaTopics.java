@@ -58,7 +58,7 @@ public class ReplicateKafkaTopics {
         final ParameterTool params = ParameterTool.fromArgs(args);
         if (!validate_params(params)) {
             print_syntax();
-            return;
+            throw new RuntimeException("Invalid syntax");
         }
 
         String topicsPattern = params.getRequired(TOPICS);
