@@ -48,6 +48,9 @@ public class ReplicateKafkaTopics {
     };
 
     public static void main(String[] args) throws Exception {
+        LOG.info("Starting ReplicateKafkaTopics");
+        LOG.warn("Starting ReplicateKafkaTopics");
+        LOG.error("Starting ReplicateKafkaTopics");
         // Read parameters from command line
         for (String opt : args) {
             System.out.println("Arg:" + opt);
