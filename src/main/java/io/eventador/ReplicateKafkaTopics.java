@@ -80,7 +80,7 @@ public class ReplicateKafkaTopics {
             for (OPTIONS opt : OPTIONS.values()) {
                 System.out.printf("         --%s\n", opt);
             }
-            System.exit(0);
+            return;
         }
 
         String topicsPattern = params.getRequired(TOPICS);
