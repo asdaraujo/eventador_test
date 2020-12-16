@@ -48,38 +48,16 @@ public class ReplicateKafkaTopics {
     };
 
     public static void main(String[] args) throws Exception {
-        LOG.info("Starting ReplicateKafkaTopics");
-        LOG.warn("Starting ReplicateKafkaTopics");
-        LOG.error("Starting ReplicateKafkaTopics");
-        // Read parameters from command line
-        for (String opt : args) {
-            System.out.println("Arg:" + opt);
+        LOG.info("Starting ReplicateKafkaTopics info");
+        LOG.warn("Starting ReplicateKafkaTopics warn");
+        LOG.error("Starting ReplicateKafkaTopics error");
+        System.out.println("Starting ReplicateKafkaTopics stdout");
+        System.err.println("Starting ReplicateKafkaTopics stderr");
 
-        }
+        for (String opt : args) LOG.debug("Arg: {}", opt);
         final ParameterTool params = ParameterTool.fromArgs(args);
-        boolean unknownOption = false;
-        for (String opt : params.toMap().keySet().stream().sorted().collect(Collectors.toList())) {
-            boolean unknown = false;
-            if (!TOPICS.equals(opt) &&
-                    !Arrays.stream(OPTIONS.values()).map(String::valueOf).anyMatch(opt::equals) &&
-                    !opt.startsWith(CONSUMER_PREFIX) &&
-                    !opt.startsWith(PRODUCER_PREFIX))
-                unknown = true;
-            System.out.printf("Parameter: %s%s = %s\n", opt, unknown ? " (UNKNOWN ARGUMENT)" : "", params.get(opt, "<no argument>"));
-            unknownOption |= unknown;
-        }
-        if(unknownOption || !Arrays.stream(REQUIRED_PARAMS).allMatch(params::has)) {
-            System.out.printf("Usage: %s [options] \\\n", ReplicateKafkaTopics.class.getSimpleName());
-            System.out.printf("         --%s <topic_pattern> \\\n", TOPICS);
-            System.out.printf("         --%s.bootstrap.servers <kafka brokers> \\\n", CONSUMER_PREFIX);
-            System.out.printf("         --%s.group.id <groupid> \\\n", CONSUMER_PREFIX);
-            System.out.printf("         [--%s.<kafka_consumer_property> <value> ...] \\\n", CONSUMER_PREFIX);
-            System.out.printf("         --%s.bootstrap.servers <kafka brokers> \\\n", PRODUCER_PREFIX);
-            System.out.printf("         [--%s.<kafka_producer_property> <value> ...]", PRODUCER_PREFIX);
-            System.out.println("\nValid options:");
-            for (OPTIONS opt : OPTIONS.values()) {
-                System.out.printf("         --%s\n", opt);
-            }
+        if (!validate_params(params)) {
+            print_syntax();
             return;
         }
 
@@ -116,15 +94,41 @@ public class ReplicateKafkaTopics {
         // Print Kafka messages to stdout - will be visible in logs
         messageStream.print();
 
-        // If you want to perform some transformations before writing the data
-        // back to Kafka, do it here!
-
         // Write payload back to Kafka topic
         messageStream
                 .addSink(producer)
                 .name("Write To Kafka");
 
         env.execute("FlinkReadWriteKafka");
+    }
+
+    private static boolean validate_params(ParameterTool params) {
+        boolean unknownOption = false;
+        for (String opt : params.toMap().keySet().stream().sorted().collect(Collectors.toList())) {
+            boolean unknown = false;
+            if (!TOPICS.equals(opt) &&
+                    Arrays.stream(OPTIONS.values()).map(String::valueOf).noneMatch(opt::equals) &&
+                    !opt.startsWith(CONSUMER_PREFIX) &&
+                    !opt.startsWith(PRODUCER_PREFIX))
+                unknown = true;
+            LOG.debug("Parameter: {}{} = {}", opt, unknown ? " (UNKNOWN ARGUMENT)" : "", params.get(opt, "<no argument>"));
+            unknownOption |= unknown;
+        }
+        return !(unknownOption || !Arrays.stream(REQUIRED_PARAMS).allMatch(params::has));
+    }
+
+    private static void print_syntax() {
+        System.out.printf("Usage: %s [options] \\\n", ReplicateKafkaTopics.class.getSimpleName());
+        System.out.printf("         --%s <topic_pattern> \\\n", TOPICS);
+        System.out.printf("         --%s.bootstrap.servers <kafka brokers> \\\n", CONSUMER_PREFIX);
+        System.out.printf("         --%s.group.id <groupid> \\\n", CONSUMER_PREFIX);
+        System.out.printf("         [--%s.<kafka_consumer_property> <value> ...] \\\n", CONSUMER_PREFIX);
+        System.out.printf("         --%s.bootstrap.servers <kafka brokers> \\\n", PRODUCER_PREFIX);
+        System.out.printf("         [--%s.<kafka_producer_property> <value> ...]", PRODUCER_PREFIX);
+        System.out.println("\nValid options:");
+        for (OPTIONS opt : OPTIONS.values()) {
+            System.out.printf("         --%s\n", opt);
+        }
     }
 
     static private Properties getPropertiesWithPrefix(Properties props, String pattern) {
