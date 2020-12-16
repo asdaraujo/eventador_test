@@ -49,14 +49,21 @@ public class ReplicateKafkaTopics {
 
     public static void main(String[] args) throws Exception {
         // Read parameters from command line
+        for (String opt : args) {
+            System.out.println("Arg:" + opt);
+
+        }
         final ParameterTool params = ParameterTool.fromArgs(args);
         boolean unknownOption = false;
-        for (String opt : params.toMap().keySet()) {
+        for (String opt : params.toMap().keySet().stream().sorted().collect(Collectors.toList())) {
+            boolean unknown = false;
             if (!TOPICS.equals(opt) &&
                     !Arrays.stream(OPTIONS.values()).map(String::valueOf).anyMatch(opt::equals) &&
                     !opt.startsWith(CONSUMER_PREFIX) &&
                     !opt.startsWith(PRODUCER_PREFIX))
-                unknownOption = true;
+                unknown = true;
+            System.out.printf("Parameter: %s%s = %s\n", opt, unknown ? " (UNKNOWN ARGUMENT)" : "", params.get(opt, "<no argument>"));
+            unknownOption |= unknown;
         }
         if(unknownOption || !Arrays.stream(REQUIRED_PARAMS).allMatch(params::has)) {
             System.out.printf("Usage: %s [options] \\\n", ReplicateKafkaTopics.class.getSimpleName());
@@ -70,7 +77,7 @@ public class ReplicateKafkaTopics {
             for (OPTIONS opt : OPTIONS.values()) {
                 System.out.printf("         --%s\n", opt);
             }
-            return;
+            System.exit(0);
         }
 
         String topicsPattern = params.getRequired(TOPICS);
