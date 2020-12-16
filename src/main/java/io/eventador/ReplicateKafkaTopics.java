@@ -48,13 +48,17 @@ public class ReplicateKafkaTopics {
     };
 
     public static void main(String[] args) throws Exception {
-        LOG.info("Starting ReplicateKafkaTopics info");
-        LOG.warn("Starting ReplicateKafkaTopics warn");
-        LOG.error("Starting ReplicateKafkaTopics error");
-        System.out.println("Starting ReplicateKafkaTopics stdout");
-        System.err.println("Starting ReplicateKafkaTopics stderr");
+//        LOG.info("Starting ReplicateKafkaTopics info");
+//        LOG.warn("Starting ReplicateKafkaTopics warn");
+//        LOG.error("Starting ReplicateKafkaTopics error");
+//        System.out.println("Starting ReplicateKafkaTopics stdout");
+//        System.err.println("Starting ReplicateKafkaTopics stderr");
 
         for (String opt : args) LOG.debug("Arg: {}", opt);
+//        for (String opt : args) System.out.printf("Arg: [%s]\n", opt);
+//        List<String> argList = Arrays.stream(args).map(s -> s.replaceAll("(<<|>>)", "\"")).collect(Collectors.toList());
+//        args = argList.toArray(args);
+//        for (String opt : args) System.out.printf("Arg2: [%s]\n", opt);
         final ParameterTool params = ParameterTool.fromArgs(args);
         if (!validate_params(params)) {
             print_syntax();
@@ -112,6 +116,7 @@ public class ReplicateKafkaTopics {
                     !opt.startsWith(PRODUCER_PREFIX))
                 unknown = true;
             LOG.debug("Parameter: {}{} = {}", opt, unknown ? " (UNKNOWN ARGUMENT)" : "", params.get(opt, "<no argument>"));
+//            System.out.printf("Parameter: [%s]%s = [%s]\n", opt, unknown ? " (UNKNOWN ARGUMENT)" : "", params.get(opt, "<no argument>"));
             unknownOption |= unknown;
         }
         return !(unknownOption || !Arrays.stream(REQUIRED_PARAMS).allMatch(params::has));
@@ -156,9 +161,6 @@ public class ReplicateKafkaTopics {
             for (ConfigEntry config : entry.getValue().entries()) {
                 topics.get(entry.getKey().name()).config.put(config.name(), config.value());
             }
-        }
-        for(Topic topic : topics.values()) {
-            System.out.println(topic);
         }
         return topics;
     }
